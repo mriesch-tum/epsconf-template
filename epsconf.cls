@@ -4,6 +4,7 @@
 %% Copyright (C) 2003 by Maarten Sneep <sneep@nat.vu.nl>
 %% Modified 2004 by B.Ph. van Milligen <boudewijn.vanmilligen@ciemat.es>
 %% Modified 2005 by G. Vlad <vlad@frascati.enea.it>
+%% Modified 2018 by M. Riesch <michael.riesch@tum.de>
 %%
 %% This file may be distributed and/or modified under the conditions of
 %% the LaTeX Project Public License, either version 1.2 of this license
@@ -16,58 +17,114 @@
 %% 1999/12/01 or later.
 %%
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{epsconf}
-    [2005/12/24 v1.1 Abstracts and paper class for the EPS 2006 Plasma Physics Conference]
-\LoadClass[a4paper,12pt,notitlepage]{article}
+\ProvidesClass{epsconf}[2018/12/17 v1.2 EPS conference abstract]
+
+% load article base class
+\LoadClass[10pt,a4paper,notitlepage]{article}
+
+% set paper size and margins
+\RequirePackage[a4paper,includemp=false,margin=2.5cm,noheadfoot]{geometry}
+
+% font encoding and face (Times)
 \RequirePackage[T1]{fontenc}
-\RequirePackage{mathptmx}
-\RequirePackage{geometry}
-%\RequirePackage{ifthen}
-\geometry{a4paper,includemp=false,margin=2.5cm,noheadfoot}
-\frenchspacing
-\pagestyle{empty}
-\setcounter{secnumdepth}{-2}
-\newcommand{\epsconf@institute}{}
-\newcommand{\institute}[1]{%
-    \renewcommand{\epsconf@institute}{#1}%
+\RequirePackage{newtxtext,newtxmath}
+\renewcommand{\familydefault}{\rmdefault}
+
+% custom references section
+\RequirePackage{cite}
+\let\oldthebibliography=\thebibliography
+\let\endoldthebibliography=\endthebibliography
+\renewenvironment{thebibliography}[1]{%
+  \FloatBarrier
+  \begin{oldthebibliography}{#1}%
+    \setlength{\parskip}{0ex}%
+    \setlength{\itemsep}{0ex}%
+    \normalfont\footnotesize
+}{%
+  \end{oldthebibliography}%
 }
-%%
-\renewcommand{\baselinestretch}{1.43}
-%make section titles bold and 12 point, 2 blank lines before, 1 after
+
+% input encoding
+\RequirePackage[utf8]{inputenc}
+
+% avoid widows and orphans
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+% Load base packages
+\RequirePackage[english]{babel}
+\RequirePackage{graphicx}
+\RequirePackage[hidelinks,breaklinks]{hyperref}
+
+% affiliations
+\newcommand{\authormark}[1]{\textsuperscript{\normalfont#1}}
+\newcounter{affil}
+\let\theaffil\empty
+\newcommand{\printaffil}[2]{%
+  \ifnum\value{affil}>1{%
+    #1.\quad#2%
+  }\else{%
+    #2%
+  }\fi
+}
+\newcommand{\affil}[2][]{%
+  \ifnum\value{affil}>0{%
+    \makeatletter
+    \g@addto@macro{\theaffil}{\par\printaffil{#1}{#2}}
+    \makeatother
+  }\else{%
+    \makeatletter
+    \g@addto@macro{\theaffil}{\printaffil{#1}{#2}}
+    \makeatother
+  }\fi
+  \addtocounter{affil}{1}
+}
+
+% custom (sub-)section titles
 \def\section{\@startsection {section}{1}{\z@}{1.0ex plus 1ex minus
- .2ex}{.2ex plus .2ex}{\normalsize\bf}}
-%make subsection titles bold and 12 point, 1 blank line before, 1 after
+    .2ex}{.2ex plus .2ex}{\normalsize\bf}}
 \def\subsection{\@startsection {subsection}{2}{\z@}{.2ex plus 1ex}
-{.2ex plus .2ex}{\normalsize\bf}}
-%%
-\def\@maketitle{%
-{\centering%
- \let\footnote\thanks%
- {\large\textbf{\@title}\par}%
-\vskip 0.5em%
- {\normalsize \lineskip .5em%
-  \begin{tabular}[t]{c}%
-    \@author
-  \end{tabular}\par}%
-  \vskip 0.3em%
-  \textit{\epsconf@institute}\par%
-}%
-\par%
-\vskip 1em\noindent%
+  {.2ex plus .2ex}{\normalsize\bf}}
+
+% prevent floats in title
+\RequirePackage{placeins}
+
+% custom title
+\makeatletter
+\renewcommand{\maketitle}{%
+  \newpage
+  \begin{center}
+    \Large\textbf{\@title}\par
+    \vskip 14pt
+    \normalsize\textbf{\@author}\par
+    \footnotesize\textit{\theaffil}\par
+    \vskip 14pt
+  \end{center}
+  \FloatBarrier
 }
-\let\epsconf@oldmaketitle\maketitle
-\def\maketitle{%
-    \epsconf@oldmaketitle%
-    \thispagestyle{empty}%
-    \global\let\epsconf@institute\@empty%
-    \global\let\institute\relax%
-}
+\makeatother
+
+% no page numbers
+\thispagestyle{empty}
+
+% indentation
 \setlength{\parindent}{1em}
-\raggedbottom
+
+% custom captions
+\RequirePackage[margin=1cm]{caption}
+\DeclareCaptionLabelFormat{figureabbr}{Fig.~#2}
+\DeclareCaptionLabelFormat{tableabbr}{Tab.~#2}
+\captionsetup[figure]{labelformat=figureabbr,labelfont=bf,font=footnotesize,
+  labelsep=space}
+\captionsetup[table]{labelformat=tableabbr,labelfont=bf,font=footnotesize,
+  labelsep=space}
+
+% custom page bottom
 \renewcommand{\footnoterule}{}
+\raggedbottom
 \AtEndDocument{%
-\clearpage%
+  \clearpage
 }
-\endinput
 %%
 %% End of file `epsconf.cls'.
