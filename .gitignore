@@ -1,0 +1,25 @@
+*~
+*#
+*.bak
+.*
+
+# explicitely allow .gitignore
+!.gitignore
+
+*.aux
+*.bbl
+*.blg
+
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.spl
+*.thm
+*.toc
+*.bcf
+*.run.xml
+*.vrb
+*-converted-to.pdf
