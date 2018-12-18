@@ -81,11 +81,14 @@
   \addtocounter{affil}{1}
 }
 
-% custom (sub-)section titles
-\def\section{\@startsection {section}{1}{\z@}{1.0ex plus 1ex minus
-    .2ex}{.2ex plus .2ex}{\normalsize\bf}}
-\def\subsection{\@startsection {subsection}{2}{\z@}{.2ex plus 1ex}
-  {.2ex plus .2ex}{\normalsize\bf}}
+% custom ((sub-)sub-)section titles
+\RequirePackage[noindentafter]{titlesec}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{1em}{0pt}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{1em}{0pt}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{1em}{0pt}
 
 % prevent floats in title
 \RequirePackage{placeins}
@@ -102,6 +105,8 @@
     \vskip 14pt
   \end{center}
   \FloatBarrier
+  \@afterindentfalse
+  \@afterheading
 }
 \makeatother
 
@@ -109,7 +114,7 @@
 \thispagestyle{empty}
 
 % indentation
-\setlength{\parindent}{1em}
+\setlength{\parindent}{0.5cm}
 
 % custom captions
 \RequirePackage[margin=1cm]{caption}
